@@ -30,3 +30,7 @@
 
 # Debug files
 *.dSYM/
+
+#Code::Blocks files
+*.cbp
+*.depend
