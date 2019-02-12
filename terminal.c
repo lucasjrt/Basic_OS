@@ -4,16 +4,16 @@
 #include "terminal.h"
 #include "stringHelper.h"
 #include "utils.h"
+#include "constants.h"
 
-#define PAGE_SIZE 4096
 #define MAX_COMMANDS 4096
 #define clear() system("cls")
-#define read(x) fflush(stdin); scanf("%s", (char*) &x) //Only works for reading strings
+#define read(x) fflush(stdin); scanf("%[^\n]s", (char*) &x) //Only works for reading strings
 
 struct command {
     char name[PAGE_SIZE / 4];
     void (*function)();
-    char params; //1 for true, 0 for false
+    char params; // 0 if command has parameters, otherwise, not 0
 };
 
 char *pwd;
@@ -24,30 +24,47 @@ void terminal_start() {
     clear();
     pwd = new("char", PAGE_SIZE);
     start_commands();
-    setString(pwd, "/");
+    set_string(pwd, "/");
     printf("Terminal [version 1.0 alpha]\n%s> ", pwd);
     loop_terminal();
 }
 
 void loop_terminal() {
+    int n;
     while (1) {
         read(command);
-        int index = recognize(command);
-        if(index < 0 && !compare(command, "exit"))
-            printf("Command not recognized\n");
+        int index = recognize(get_command(command));
+        if(index < 0 && !compare(get_command(command), "exit"))
+            printf("\"%s\" not recognized as a command\n", get_command(command));
         else if(compare(command, "exit"))
             break;
+        else if(compare(command, "")) {}
+        else if(command_list[index].params) {
+            char **params = get_params(command, &n);
+            param_run(get_command(command), index, params, n);
+        }
         else
             run(command, index);
         printf("%s> ", pwd);
+        set_string(command, "");
     }
 }
 
 void start_commands() { //Start default commands
     //Clear
-    setString(command_list[0].name, "clear");
+    set_string(command_list[0].name, "clear");
     command_list[0].function = clearScreen;
-    command_list[0].params = 1;
+    command_list[0].params = 0;
+
+    //Pwd
+    set_string(command_list[1].name, "pwd");
+    command_list[1].function = print_pwd;
+    command_list[1].params = 0;
+
+    //Echo
+    set_string(command_list[2].name, "echo");
+    command_list[2].function = echo;
+    command_list[2].params = 1;
 }
 
 int recognize(char* command) {
@@ -57,11 +74,34 @@ int recognize(char* command) {
     return -1;
 }
 
-void run(char *command, int index) {
-    command_list[index].function();
+void* run(char *command, int index) {
+    void *ret = NULL;
+    command_list[index].function(ret);
+    return ret;
+}
+
+void* param_run(char *command, int index, char** params, int num_params) {
+    void *ret = NULL;
+    command_list[index].function(params, num_params, ret);
+    return ret;
 }
 
 //Commands
-void clearScreen() {
+void clearScreen(void *ret) {
     clear();
+}
+
+void print_pwd(void *ret) {
+    printf("%s\n", pwd);
+}
+
+void echo(char** params, int num_params, void* ret) {
+    if(num_params > 1) {
+        //TODO: add parameters (e.g -i, -f)
+    } else {
+        if(is_quoted(params[0]))
+            printf("%s\n", remove_quotes(params[0]));
+        else
+            printf("Invalid string\n");
+    }
 }

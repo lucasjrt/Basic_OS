@@ -20,3 +20,21 @@ void* new(char *type, int size) {
         return NULL;
     }
 }
+
+char* get_command(char *command) {
+    int a;
+    char **temp = split(command, ' ', &a);
+    char *c = (char*) malloc(length(temp[0]) * sizeof(char));
+    set_string(c, temp[0]);
+    free(temp);
+    return c;
+}
+
+char** get_params(char *command, int *number_params) {
+    char **params = split(command, ' ', number_params);
+    for(int i = 0; i < *number_params - 1; i++) {
+        set_string(params[i], params[i+1]);
+    }
+    (*number_params)--;
+    return params;
+}
