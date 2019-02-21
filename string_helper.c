@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "stringHelper.h"
+#include "string_helper.h"
 #include "constants.h"
 
 void set_string(char *variable, char *value) {

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "utils.h"
-#include "stringHelper.h"
+#include "string_helper.h"
 
 void* new(char *type, int size) {
     if(compare(type, "char")) {

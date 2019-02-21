@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "FileSystem.h"
-#include "Device.h"
+#include "file_system.h"
+#include "device.h"
 #include "st_device.h"
 
 static unsigned int n_partition=0;

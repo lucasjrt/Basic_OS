@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "FileSystem.h"
-#include "Device.h"
+#include "file_system.h"
+#include "device.h"
 #include "st_device.h"
-
-
 
 void show_file(File f){
     printf("<fle> %s\n", f.name);
@@ -33,8 +31,7 @@ void show_files(const char *path, unsigned int partition){
 
 }
 
-int main()
-{
+int main() {
     char command_line[100];
     char command[20];
     char cur_path[100];
@@ -42,6 +39,7 @@ int main()
     int i=0, aux_size;
     unsigned int st_dev_id, cur_partition;
     st_dev_id = ins_st_dev("HD","Samsung",0,200000);
+
     cur_partition = create_partition(st_dev_id, "Fat32", 40000);
     if(cur_partition==-1)
         printf("Erro ao criar particao\n");
@@ -163,7 +161,7 @@ int main()
 
 
 /*
-Exemplos de uso de algumas funcoes:
+Some functions uses examples:
 
     unsigned int st_dev_id, cur_partition;
     st_dev_id = ins_st_dev("HD","Samsung",0,200000);

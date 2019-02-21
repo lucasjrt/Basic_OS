@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "terminal.h"
-#include "stringHelper.h"
+#include "string_helper.h"
 #include "utils.h"
 #include "constants.h"
 
@@ -12,6 +12,7 @@
 
 struct command {
     char name[PAGE_SIZE / 4];
+    char description[PAGE_SIZE];
     void (*function)();
     char params; // 0 if command has parameters, otherwise, not 0
 };
@@ -50,7 +51,13 @@ void loop_terminal() {
     }
 }
 
-void start_commands() { //Start default commands
+int create_command() {
+
+}
+
+//Start default commands
+void start_commands() {
+
     //Clear
     set_string(command_list[0].name, "clear");
     command_list[0].function = clearScreen;
@@ -65,6 +72,11 @@ void start_commands() { //Start default commands
     set_string(command_list[2].name, "echo");
     command_list[2].function = echo;
     command_list[2].params = 1;
+
+    //Help
+    set_string(command_list[3].name, "help");
+    command_list[3].function = help;
+    command_list[3].params = 0;
 }
 
 int recognize(char* command) {
@@ -86,7 +98,7 @@ void* param_run(char *command, int index, char** params, int num_params) {
     return ret;
 }
 
-//Commands
+//Commands without parameters
 void clearScreen(void *ret) {
     clear();
 }
@@ -95,6 +107,13 @@ void print_pwd(void *ret) {
     printf("%s\n", pwd);
 }
 
+void help() {
+    int i;
+    printf("Available commands: ");
+    //for(i = 0; i < )
+}
+
+//Commands with parameters
 void echo(char** params, int num_params, void* ret) {
     if(num_params > 1) {
         //TODO: add parameters (e.g -i, -f)

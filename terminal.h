@@ -14,5 +14,6 @@ void* param_run(char *command, int index, char** params, int num_params); //Runs
 void clearScreen(void* ret);
 void print_pwd(void* ret);
 void echo(char** params, int num_params, void* ret);
+void help();
 
 #endif // TERMINAL_H
